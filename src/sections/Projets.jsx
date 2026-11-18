@@ -78,6 +78,12 @@ export default function Projets() {
   /* Filtre animé avec Flip.
      - la hauteur de la grille est figée puis animée (sinon elle s'effondre pendant que
        les cartes passent en position absolue et toute la page saute) ;
+     - étapes ordonnées : si la grille rétrécit, les cartes se placent d'abord puis la
+       grille se resserre ; si elle grandit, la grille s'ouvre d'abord puis les cartes arrivent ;
+     - la grille est rognée pendant l'animation : une carte ne peut jamais passer
+       par-dessus le contenu qui suit ;
+     - l'animation démarre à l'image suivante : la tâche lourde du clic (rendu React,
+       mesures) ne fait plus sauter l'horloge GSAP en avant ;
      - pas de mise à l'échelle (les cartes n'ont pas la même hauteur : le texte se déformait) ;
      - un clic pendant une animation repart proprement de la position actuelle. */
   const flipTl = useRef(null);
@@ -92,7 +98,7 @@ export default function Projets() {
     flipTl.current?.kill();
     gsap.set(cards, { clearProps: FLIP_PROPS });
     lockH.current = grid.offsetHeight;
-    if (!reduce) gsap.set(grid, { height: lockH.current });
+    if (!reduce) { gsap.set(grid, { height: lockH.current }); grid.classList.add("is-flipping"); }
     setFilter(f);
   };
   useLayoutEffect(() => {
@@ -103,17 +109,26 @@ export default function Projets() {
     gsap.set(grid, { height: "auto" });
     const target = grid.offsetHeight;
     gsap.set(grid, { height: lockH.current });
+    const growing = target > lockH.current;
 
     const tl = gsap.timeline({
-      onComplete: () => { gsap.set(grid, { clearProps: "height" }); ScrollTrigger.refresh(); },
+      paused: true,
+      onComplete: () => {
+        gsap.set(grid, { clearProps: "height" });
+        grid.classList.remove("is-flipping");
+        ScrollTrigger.refresh();
+      },
     });
     tl.add(Flip.from(state, {
-      duration: 0.55, ease: "power3.inOut", absolute: true, scale: false, prune: true,
-      onEnter: (els) => gsap.fromTo(els, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.45, delay: 0.15, ease: "power3.out" }),
-      onLeave: (els) => gsap.to(els, { autoAlpha: 0, scale: 0.94, duration: 0.25, ease: "power2.in" }),
-    }), 0);
-    tl.to(grid, { height: target, duration: 0.55, ease: "power3.inOut" }, 0);
+      duration: 0.5, ease: "power3.inOut", absolute: true, scale: false, prune: true,
+      onEnter: (els) => gsap.fromTo(els, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.4, delay: 0.1, ease: "power3.out" }),
+      onLeave: (els) => gsap.to(els, { autoAlpha: 0, scale: 0.96, duration: 0.2, ease: "power2.in" }),
+    }), growing ? 0.3 : 0);
+    tl.to(grid, { height: target, duration: 0.4, ease: "power3.inOut" }, growing ? 0 : 0.35);
     flipTl.current = tl;
+    // démarrage à l'image suivante (la frame courante a absorbé le rendu et les mesures)
+    const id = requestAnimationFrame(() => { if (flipTl.current === tl) tl.play(0); });
+    return () => cancelAnimationFrame(id);
   }, [filter]);
 
   return (

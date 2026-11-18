@@ -451,6 +451,8 @@ kbd {
 .projects { position: relative; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); align-content: start; gap: 16px; }
 .proj.spotlight-card { border-radius: 0; padding: 0; background-color: var(--panel); box-shadow: none; }
 .proj.is-hidden { display: none; }
+/* pendant l'animation du filtre : rien ne dépasse de la grille (marge pour l'ombre au survol) */
+.projects.is-flipping { overflow: clip; overflow-clip-margin: 12px; }
 .proj-inner { display: flex; flex-direction: column; height: 100%; padding: 22px; text-decoration: none; }
 .proj-top { display: flex; justify-content: space-between; gap: 10px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
 .proj h3 { margin: 12px 0 8px; font-weight: 900; font-size: 22px; text-transform: uppercase; }
