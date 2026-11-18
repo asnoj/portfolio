@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { SECTIONS } from "../data.js";
 import { scrollToId } from "../lib/scroll.js";
+import { useTheme } from "../lib/theme.jsx";
 
 const pad = (n) => String(n).padStart(2, "0");
 
@@ -11,6 +12,7 @@ export default function Hud({ active, onMenu }) {
   const root = useRef(null);
   const nameRef = useRef(null);
   const [clock, setClock] = useState("--:--:--");
+  const { theme, toggle } = useTheme();
 
   useEffect(() => {
     const t = () => setClock(new Date().toLocaleTimeString("fr-FR", { hour12: false }));
@@ -45,6 +47,17 @@ export default function Hud({ active, onMenu }) {
         </div>
         <div className="hud-right">
           <span className="hud-clock" aria-hidden="true">{clock}</span>
+          <button
+            type="button" className="theme-btn" onClick={toggle}
+            aria-label={theme === "light" ? "Passer en mode sombre" : "Passer en mode clair"}
+            title={theme === "light" ? "Mode sombre" : "Mode clair"}
+          >
+            {theme === "light" ? (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></svg>
+            )}
+          </button>
           <button type="button" className="hud-menu" onClick={onMenu} aria-haspopup="dialog">
             <span className="burger" aria-hidden="true"><i /><i /><i /></span>Menu <kbd>Échap</kbd>
           </button>

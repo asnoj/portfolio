@@ -3,8 +3,10 @@ import { T } from "../components/Tip.jsx";
 import ScrollReveal from "../components/rb/ScrollReveal.jsx";
 import CountUp from "../components/rb/CountUp/CountUp.jsx";
 import { PROJECTS, HTB_MACHINES, RNCP_URL } from "../data.js";
+import { usePalette } from "../lib/theme.jsx";
 
 export default function Profil() {
+  const pal = usePalette();
   return (
     <section id="profil" className="section">
       <SectionHead num="01" kicker="qui je suis" title="Profil" />
@@ -57,7 +59,7 @@ export default function Profil() {
         baseOpacity={0.12}
         blurStrength={6}
         baseRotation={0}
-        highlightColor="#c8ff00"
+        highlightColor={pal.acidInk}
         wordAnimationEnd="center center"
       >
         « Les livres c'est bien, mais casser et construire des trucs, c'est beaucoup plus fun. »

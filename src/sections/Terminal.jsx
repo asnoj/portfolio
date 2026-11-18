@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import SectionHead from "../components/SectionHead.jsx";
 import FaultyTerminal from "../components/rb/FaultyTerminal.jsx";
+import { usePalette } from "../lib/theme.jsx";
 import { PROJECTS, CAT_LABEL, GH, HTB_URL, EMAIL, LINKEDIN, RNCP_URL, SECTIONS, HTB_MACHINES } from "../data.js";
 import { scrollToId } from "../lib/scroll.js";
 
@@ -15,6 +16,7 @@ const HELP = [
 ];
 
 export default function Terminal() {
+  const pal = usePalette();
   const [lines, setLines] = useState([{ cls: "m", out: <>hsh v4.2 — shell invité de Jonas Crochet. Tapez <span className="c">help</span> pour commencer.</> }]);
   const [value, setValue] = useState("");
   const history = useRef([]);
@@ -123,7 +125,7 @@ export default function Terminal() {
     <section id="terminal" className="section term-section">
       <div className="term-bg" aria-hidden="true">
         <FaultyTerminal
-          tint="#c8ff00" brightness={0.55} scale={1.6} gridMul={[2, 1]} digitSize={1.3}
+          tint={pal.acidInk} brightness={0.55} scale={1.6} gridMul={[2, 1]} digitSize={1.3}
           timeScale={0.25} scanlineIntensity={0.5} glitchAmount={0.6} flickerAmount={0.6}
           curvature={0.1} mouseStrength={0.3} vignette={0.6} glyphs="blocks" dpr={1}
         />

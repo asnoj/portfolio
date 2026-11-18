@@ -7,6 +7,7 @@ import VariableProximity from "../components/rb/VariableProximity.jsx";
 import { T } from "../components/Tip.jsx";
 import Ticker from "../components/Ticker.jsx";
 import { scrollToId } from "../lib/scroll.js";
+import { usePalette } from "../lib/theme.jsx";
 
 const ROLES = ["Programmation bas niveau", "Cybersécurité offensive", "C · C++ · x86-64 ASM", "Pentest · CTF · Hack The Box"];
 
@@ -14,6 +15,7 @@ export default function Hero({ revealed }) {
   const root = useRef(null);
   const roleRef = useRef(null);
   const intro = useRef(null);
+  const pal = usePalette();
 
   useGSAP(() => {
     const mm = gsap.matchMedia();
@@ -73,7 +75,7 @@ export default function Hero({ revealed }) {
     <section id="accueil" className="hero" ref={root}>
       <div className="hero-bg" aria-hidden="true">
         {revealed && (
-          <DotGrid dotSize={3} gap={22} baseColor="#2b3427" activeColor="#c8ff00" proximity={130} glow={0.35} shockRadius={260} shockStrength={3} fade={0.6} />
+          <DotGrid dotSize={3} gap={22} baseColor={pal.dotBase} activeColor={pal.acidInk} proximity={130} glow={0.35} shockRadius={260} shockStrength={3} fade={0.6} />
         )}
       </div>
 
@@ -101,8 +103,8 @@ export default function Hero({ revealed }) {
                     falloff="exponential"
                     fromFontVariationSettings="'wght' 900, 'wdth' 125"
                     toFontVariationSettings="'wght' 380, 'wdth' 100"
-                    fromColor={i ? "#c8ff00" : "#e9eee6"}
-                    toColor={i ? "#ffffff" : "#c8ff00"}
+                    fromColor={i ? pal.acidInk : pal.text}
+                    toColor={i ? pal.strong : pal.acidInk}
                   />
                 </span>
               </span>

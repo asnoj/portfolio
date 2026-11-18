@@ -5,8 +5,8 @@ import SectionHead from "../components/SectionHead.jsx";
 import SpotlightCard from "../components/rb/SpotlightCard.jsx";
 import { T } from "../components/Tip.jsx";
 import { CHECKLIST, SKILL_TREES, LEVELS, PROJECTS, GH } from "../data.js";
+import { usePalette } from "../lib/theme.jsx";
 
-const ACCENT = { acid: "#c8ff00", pink: "#ff5cc8", white: "#ffffff" };
 const repoOf = (name) => PROJECTS.find((p) => p.name === name)?.repo ?? name;
 
 function Proof({ proof }) {
@@ -24,6 +24,8 @@ function Proof({ proof }) {
 
 export default function Skills() {
   const root = useRef(null);
+  const pal = usePalette();
+  const ACCENT = { acid: pal.acidInk, pink: pal.pink, white: pal.strong };
 
   useGSAP(() => {
     const mm = gsap.matchMedia();
@@ -74,6 +76,7 @@ export default function Skills() {
             key={tree.id}
             className={`tree tree-${tree.accent}`}
             spotlightColor={ACCENT[tree.accent]}
+            theme={pal.spotlight}
             intensity={0.12}
             spotlightSize={320}
             borderGlow={0.8}

@@ -8,6 +8,7 @@ import SpotlightCard from "../components/rb/SpotlightCard.jsx";
 import Ticker from "../components/Ticker.jsx";
 import { T } from "../components/Tip.jsx";
 import { PROJECTS, CAT_LABEL, GH } from "../data.js";
+import { usePalette } from "../lib/theme.jsx";
 
 gsap.registerPlugin(Flip);
 
@@ -21,6 +22,7 @@ export default function Projets() {
   const root = useRef(null);
   const flipState = useRef(null);
   const [filter, setFilter] = useState("all");
+  const pal = usePalette();
 
   useGSAP(() => {
     const mm = gsap.matchMedia();
@@ -73,21 +75,45 @@ export default function Projets() {
 
   }, { scope: root });
 
-  // filtre animé avec Flip : on capture l'état avant le rendu, puis on anime vers le nouveau
+  /* Filtre animé avec Flip.
+     - la hauteur de la grille est figée puis animée (sinon elle s'effondre pendant que
+       les cartes passent en position absolue et toute la page saute) ;
+     - pas de mise à l'échelle (les cartes n'ont pas la même hauteur : le texte se déformait) ;
+     - un clic pendant une animation repart proprement de la position actuelle. */
+  const flipTl = useRef(null);
+  const lockH = useRef(0);
+  const FLIP_PROPS = "position,top,left,width,height,margin,transform,opacity,visibility,zIndex";
   const pick = (f) => {
     if (f === filter) return;
-    flipState.current = Flip.getState(root.current.querySelectorAll(".proj"));
+    const grid = root.current.querySelector(".projects");
+    const cards = grid.querySelectorAll(".proj");
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    flipState.current = reduce ? null : Flip.getState(cards, { props: "opacity" });
+    flipTl.current?.kill();
+    gsap.set(cards, { clearProps: FLIP_PROPS });
+    lockH.current = grid.offsetHeight;
+    if (!reduce) gsap.set(grid, { height: lockH.current });
     setFilter(f);
   };
   useLayoutEffect(() => {
-    if (!flipState.current) return;
-    Flip.from(flipState.current, {
-      duration: 0.5, ease: "power3.inOut", absolute: true, scale: true,
-      onEnter: (els) => gsap.fromTo(els, { autoAlpha: 0, scale: 0.9 }, { autoAlpha: 1, scale: 1, duration: 0.4 }),
-      onLeave: (els) => gsap.to(els, { autoAlpha: 0, scale: 0.9, duration: 0.3 }),
-      onComplete: () => ScrollTrigger.refresh(),
-    });
+    const state = flipState.current;
+    if (!state) return;
     flipState.current = null;
+    const grid = root.current.querySelector(".projects");
+    gsap.set(grid, { height: "auto" });
+    const target = grid.offsetHeight;
+    gsap.set(grid, { height: lockH.current });
+
+    const tl = gsap.timeline({
+      onComplete: () => { gsap.set(grid, { clearProps: "height" }); ScrollTrigger.refresh(); },
+    });
+    tl.add(Flip.from(state, {
+      duration: 0.55, ease: "power3.inOut", absolute: true, scale: false, prune: true,
+      onEnter: (els) => gsap.fromTo(els, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.45, delay: 0.15, ease: "power3.out" }),
+      onLeave: (els) => gsap.to(els, { autoAlpha: 0, scale: 0.94, duration: 0.25, ease: "power2.in" }),
+    }), 0);
+    tl.to(grid, { height: target, duration: 0.55, ease: "power3.inOut" }, 0);
+    flipTl.current = tl;
   }, [filter]);
 
   return (
@@ -129,7 +155,7 @@ export default function Projets() {
 
         <div className="projects">
           {OTHERS.map((p) => (
-            <SpotlightCard key={p.name} className={`proj cat-${p.cat}${filter === "all" || p.cat === filter ? "" : " is-hidden"}`} spotlightColor="#c8ff00" intensity={0.1} spotlightSize={220} data-flip-id={p.name}>
+            <SpotlightCard key={p.name} className={`proj cat-${p.cat}${filter === "all" || p.cat === filter ? "" : " is-hidden"}`} spotlightColor={pal.acidInk} theme={pal.spotlight} intensity={0.1} spotlightSize={220} data-flip-id={p.name}>
               <a href={url(p)} target="_blank" rel="noopener" className="proj-inner" data-cursor="Ouvrir ↗">
                 <div className="proj-top"><span>{CAT_LABEL[p.cat]}</span><span>{p.lang}</span></div>
                 <h3>{p.name}</h3>

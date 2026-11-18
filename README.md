@@ -34,7 +34,7 @@ monsite.fr {
 ## Personnaliser
 
 - **Contenu** (projets, compétences, machines HTB, glossaire, liens) : `src/data.js`
-- **Couleurs et typo** : variables CSS dans `:root` de `src/styles.css`
+- **Couleurs et typo** : variables CSS dans `:root` (sombre) et `:root[data-theme="light"]` (clair) de `src/styles.css` ; couleurs des composants canvas/WebGL dans `src/lib/theme.jsx`
 - **Sections** : `src/sections/*.jsx`
 - **Composants React Bits** (non modifiés, récupérés depuis reactbits.dev) : `src/components/rb/`
 
@@ -47,5 +47,7 @@ monsite.fr {
 | Smooth scroll | Lenis, synchronisé sur le ticker GSAP |
 | Effets | React Bits : DotGrid, ScrollVelocity, DecryptedText, SpotlightCard, Magnet, ScrollReveal, CountUp, VariableProximity, FaultyTerminal, ClickSpark |
 | Curseur | Réticule GSAP (`src/components/Cursor.jsx`), souris uniquement |
+
+Thème clair / sombre : bouton dans la barre du haut, suit la préférence système par défaut et se mémorise.
 
 `prefers-reduced-motion` est respecté : pas d'intro, pas d'épinglage ni d'animations au scroll.
