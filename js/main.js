@@ -233,18 +233,16 @@
     later(() => phase("p0"), 60);
 
     // phase 1 : journal + compteur
-    const T1 = 500, D1 = 2100;
+    const T1 = 400, D1 = 1500;
     const lines = [
-      ["mem check ..................... 16384 MB", "ok"],
-      ["loading kernel modules ........ [ OK ]", "ok"],
-      ["mount /dev/brain .............. [ OK ]", "ok"],
-      ["caffeine level ................ [ LOW ]", "warn"],
-      ["linking libft.a ............... [ OK ]", "ok"],
-      ["unlocking hedgepass vault ..... [ OK ]", "ok"],
-      ["scanning htb targets .......... [ 5 ]", "ok"],
-      ["uplink: ÉCOLE 42 LE HAVRE ..... [ OK ]", "ok"],
+      ["profil ........................ [ OK ]", "ok"],
+      ["parcours ...................... [ OK ]", "ok"],
+      ["compétences ................... [ OK ]", "ok"],
+      ["projets ....................... [ 18 ]", "ok"],
+      ["hack the box .................. [ 05 ]", "ok"],
+      ["contact ....................... [ OK ]", "ok"],
     ];
-    const mods = ["NOYAU", "MÉMOIRE", "RÉSEAU", "CRYPTO", "PROJETS", "PROFIL"];
+    const mods = ["PROFIL", "PARCOURS", "COMPÉTENCES", "PROJETS", "CONTACT"];
     later(() => {
       phase("p1");
       lines.forEach(([txt, cls], i) => later(() => {
@@ -268,11 +266,11 @@
     }, T1);
 
     // phase 2 : aplat plein écran (après un temps d'arrêt à 100 %)
-    const T2 = T1 + D1 + 1100;
+    const T2 = T1 + D1 + 500;
     later(() => phase("p2"), T2);
 
     // phase 3 : identification
-    const T3 = T2 + 900;
+    const T3 = T2 + 700;
     later(() => {
       phase("p3");
       const target = name.textContent;
@@ -288,8 +286,8 @@
       };
       decode();
     }, T3);
-    later(() => phase("p4"), T3 + 1100);
-    later(end, T3 + 3300);
+    later(() => phase("p4"), T3 + 900);
+    later(end, T3 + 2600);
   }
 
   /* ---------- TEXTE TAPÉ ---------- */
@@ -428,15 +426,13 @@
         else print(`connexion au nœud ${esc(q)}…`, "g");
       },
       clear: () => { out.innerHTML = ""; },
-      ls: () => print("projects/  htb-writeups/  coffee.txt  .secrets", "c"),
+      ls: () => print("projects/  htb-writeups/  cv.txt", "c"),
       "cat": (args) => {
-        if (args[0] === "coffee.txt") return print("niveau de café : critique. réapprovisionnement requis.", "y");
-        if (args[0] === ".secrets") return print("cat: .secrets: Permission denied", "r");
+        if (args[0] === "cv.txt") return COMMANDS.cv();
         print(`cat: ${esc(args[0] || "")}: Aucun fichier ou dossier de ce type`, "r");
       },
-      sudo: () => print("herisson n'est pas dans le fichier sudoers. Cet incident sera signalé. >;]", "r"),
-      "rm": () => print("rm: bien essayé.", "r"),
-      exit: () => print("Il n'y a pas de sortie. Seulement des offres de stage.", "y"),
+      sudo: () => print("guest n'est pas dans le fichier sudoers.", "r"),
+      exit: () => { print("logout", "m"); goNode("accueil"); },
       hedgehog: () => print("   .|||||||||.\n  |||||||||||||\n |||||||||||' .\\\n `||||||||||_,__o", "y"),
     };
 
