@@ -45,6 +45,7 @@ monsite.fr {
 | UI | React 19, Vite |
 | Animations | GSAP + ScrollTrigger + Flip, `@gsap/react` (`useGSAP`) |
 | Smooth scroll | Lenis, synchronisé sur le ticker GSAP |
-| Effets | React Bits : DotGrid, ScrollVelocity, DecryptedText, SpotlightCard, Magnet, ScrollReveal, CountUp |
+| Effets | React Bits : DotGrid, ScrollVelocity, DecryptedText, SpotlightCard, Magnet, ScrollReveal, CountUp, VariableProximity, FaultyTerminal, ClickSpark |
+| Curseur | Réticule GSAP (`src/components/Cursor.jsx`), souris uniquement |
 
 `prefers-reduced-motion` est respecté : pas d'intro, pas d'épinglage ni d'animations au scroll.

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import SectionHead from "../components/SectionHead.jsx";
+import FaultyTerminal from "../components/rb/FaultyTerminal.jsx";
 import { PROJECTS, CAT_LABEL, GH, HTB_URL, EMAIL, LINKEDIN, RNCP_URL, SECTIONS, HTB_MACHINES } from "../data.js";
 import { scrollToId } from "../lib/scroll.js";
 
@@ -119,7 +120,14 @@ export default function Terminal() {
   };
 
   return (
-    <section id="terminal" className="section">
+    <section id="terminal" className="section term-section">
+      <div className="term-bg" aria-hidden="true">
+        <FaultyTerminal
+          tint="#c8ff00" brightness={0.55} scale={1.6} gridMul={[2, 1]} digitSize={1.3}
+          timeScale={0.25} scanlineIntensity={0.5} glitchAmount={0.6} flickerAmount={0.6}
+          curvature={0.1} mouseStrength={0.3} vignette={0.6} glyphs="blocks" dpr={1}
+        />
+      </div>
       <SectionHead num="06" kicker="shell invité" title="Terminal" />
 
       <div className="term" data-reveal>

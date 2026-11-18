@@ -34,6 +34,7 @@ export default function Projets() {
         const pad = parseFloat(getComputedStyle(pin).paddingLeft) || 0;
         return Math.max(0, track.scrollWidth - (pin.clientWidth - 2 * pad));
       };
+      const skew = gsap.quickTo(".feat-card", "skewX", { duration: 0.5, ease: "power3" });
       const tween = gsap.to(track, {
         x: () => -distance(),
         ease: "none",
@@ -44,9 +45,15 @@ export default function Projets() {
           pin: true,
           scrub: 0.6,
           invalidateOnRefresh: true,
-          onUpdate: (self) => gsap.set(".feat-progress i", { scaleX: self.progress }),
+          onUpdate: (self) => {
+            gsap.set(".feat-progress i", { scaleX: self.progress });
+            // les cartes s'inclinent selon la vitesse de défilement, puis reviennent à plat
+            skew(gsap.utils.clamp(-7, 7, self.getVelocity() / -350));
+          },
         },
       });
+      const settle = () => skew(0);
+      ScrollTrigger.addEventListener("scrollEnd", settle);
       // le gros numéro de chaque carte glisse légèrement à contre-sens (parallaxe)
       gsap.utils.toArray(".feat-num", root.current).forEach((num) => {
         gsap.fromTo(num, { xPercent: 40 }, {
@@ -54,6 +61,7 @@ export default function Projets() {
           scrollTrigger: { trigger: num.closest(".feat-card"), containerAnimation: tween, start: "left right", end: "right left", scrub: true },
         });
       });
+      return () => ScrollTrigger.removeEventListener("scrollEnd", settle);
     });
 
     mm.add("(prefers-reduced-motion: no-preference)", () => {
@@ -93,7 +101,7 @@ export default function Projets() {
         </div>
         <div className="feat-track">
           {FEATURED.map((p, i) => (
-            <a key={p.name} className={`feat-card cat-${p.cat}`} href={url(p)} target="_blank" rel="noopener">
+            <a key={p.name} className={`feat-card cat-${p.cat}`} href={url(p)} target="_blank" rel="noopener" data-cursor="Ouvrir ↗">
               <div className="feat-top">
                 <span className="feat-num">{pad(i + 1)}</span>
                 <span className="feat-meta">{CAT_LABEL[p.cat]} · {p.lang}</span>
@@ -122,7 +130,7 @@ export default function Projets() {
         <div className="projects">
           {OTHERS.map((p) => (
             <SpotlightCard key={p.name} className={`proj cat-${p.cat}${filter === "all" || p.cat === filter ? "" : " is-hidden"}`} spotlightColor="#c8ff00" intensity={0.1} spotlightSize={220} data-flip-id={p.name}>
-              <a href={url(p)} target="_blank" rel="noopener" className="proj-inner">
+              <a href={url(p)} target="_blank" rel="noopener" className="proj-inner" data-cursor="Ouvrir ↗">
                 <div className="proj-top"><span>{CAT_LABEL[p.cat]}</span><span>{p.lang}</span></div>
                 <h3>{p.name}</h3>
                 <p>{p.desc}</p>

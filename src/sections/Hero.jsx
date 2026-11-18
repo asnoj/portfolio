@@ -3,8 +3,8 @@ import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import DotGrid from "../components/rb/DotGrid.jsx";
 import Magnet from "../components/rb/Magnet/Magnet.jsx";
+import VariableProximity from "../components/rb/VariableProximity.jsx";
 import { T } from "../components/Tip.jsx";
-import { SplitChars } from "../components/SectionHead.jsx";
 import Ticker from "../components/Ticker.jsx";
 import { scrollToId } from "../lib/scroll.js";
 
@@ -20,14 +20,34 @@ export default function Hero({ revealed }) {
     mm.add("(prefers-reduced-motion: no-preference)", () => {
       intro.current = gsap.timeline({ paused: true, defaults: { ease: "power4.out" } })
         .from(".hero-meta span", { autoAlpha: 0, y: -12, duration: 0.5, stagger: 0.06 })
-        .from(".hero-name .split-char", { yPercent: 115, duration: 0.9, stagger: 0.03 }, "<0.1")
+        .from(".name-inner", { yPercent: 110, duration: 1, stagger: 0.12 }, "<0.1")
         .from(".hero-kicker > *, .hero-title, .hero-role, .hero-lead, .hero-actions", { autoAlpha: 0, y: 24, duration: 0.7, stagger: 0.07 }, "<0.3")
         .from(".hero-card", { autoAlpha: 0, x: 40, rotate: 1.5, duration: 0.9 }, "<0.1")
         .from(".hero-card .stats > div", { autoAlpha: 0, x: 12, duration: 0.4, stagger: 0.05 }, "<0.3");
 
       // sortie au scroll : le contenu remonte et s'efface, la carte part en parallaxe
       gsap.to(".hero-main", { yPercent: -18, autoAlpha: 0.15, ease: "none", scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true } });
-      gsap.to(".hero-card", { yPercent: -35, ease: "none", scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true } });
+      gsap.to(".hero-card-wrap", { yPercent: -35, ease: "none", scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true } });
+    });
+
+    // fiche : inclinaison 3D qui suit la souris + reflet (souris uniquement)
+    mm.add("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)", () => {
+      const card = root.current.querySelector(".hero-card");
+      const glare = card.querySelector(".card-glare");
+      const rx = gsap.quickTo(card, "rotationX", { duration: 0.6, ease: "power3" });
+      const ry = gsap.quickTo(card, "rotationY", { duration: 0.6, ease: "power3" });
+      const gx = gsap.quickTo(glare, "xPercent", { duration: 0.6, ease: "power3" });
+      const onMove = (e) => {
+        const r = card.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width - 0.5;
+        const py = (e.clientY - r.top) / r.height - 0.5;
+        const k = Math.max(Math.abs(px), Math.abs(py)) > 1.2 ? 0 : 1; // trop loin : retour à plat
+        ry(px * 12 * k); rx(-py * 10 * k); gx(px * 60 * k);
+      };
+      root.current.addEventListener("pointermove", onMove);
+      const reset = () => { rx(0); ry(0); gx(0); };
+      root.current.addEventListener("pointerleave", reset);
+      return () => { root.current?.removeEventListener("pointermove", onMove); root.current?.removeEventListener("pointerleave", reset); };
     });
 
     // rôle qui tourne : sortie vers le haut, entrée par le bas
@@ -70,7 +90,24 @@ export default function Hero({ revealed }) {
             <span className="tag tag-a">Stage</span><span className="tag tag-p">Alternance</span>
             <span>dès janvier 2027 · partout en France</span>
           </p>
-          <h1 className="hero-name"><SplitChars text="JONAS" /><SplitChars text="CROCHET" /></h1>
+          <h1 className="hero-name" aria-label="Jonas Crochet">
+            {["JONAS", "CROCHET"].map((w, i) => (
+              <span className="name-line" key={w} aria-hidden="true">
+                <span className="name-inner">
+                  <VariableProximity
+                    label={w}
+                    containerRef={root}
+                    radius={150}
+                    falloff="exponential"
+                    fromFontVariationSettings="'wght' 900, 'wdth' 125"
+                    toFontVariationSettings="'wght' 380, 'wdth' 100"
+                    fromColor={i ? "#c8ff00" : "#e9eee6"}
+                    toColor={i ? "#ffffff" : "#c8ff00"}
+                  />
+                </span>
+              </span>
+            ))}
+          </h1>
           <p className="hero-title">Étudiant en Architecture Informatique <span>(Bac+5)</span></p>
           <p className="hero-role"><span className="role-mask"><span ref={roleRef}>{ROLES[0]}</span></span></p>
           <p className="hero-lead">
@@ -89,7 +126,9 @@ export default function Hero({ revealed }) {
           </div>
         </div>
 
+        <div className="hero-card-wrap">
         <aside className="hero-card" aria-label="Fiche">
+          <span className="card-glare" aria-hidden="true" />
           <div className="card-head"><span>FICHE //</span><span>JC</span></div>
           <pre className="hedgehog" aria-hidden="true">{`  .|||||||||.
  |||||||||||||
@@ -106,6 +145,7 @@ export default function Hero({ revealed }) {
           </dl>
           <div className="barcode" aria-hidden="true" />
         </aside>
+        </div>
       </div>
 
       <p className="scroll-cue" aria-hidden="true"><span>scroll</span><i /></p>

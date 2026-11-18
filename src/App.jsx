@@ -8,6 +8,8 @@ import Boot, { shouldBoot } from "./components/Boot.jsx";
 import Hud from "./components/Hud.jsx";
 import Menu from "./components/Menu.jsx";
 import { TooltipLayer } from "./components/Tip.jsx";
+import Cursor from "./components/Cursor.jsx";
+import ClickSpark from "./components/rb/ClickSpark/ClickSpark.jsx";
 import Hero from "./sections/Hero.jsx";
 import Profil from "./sections/Profil.jsx";
 import Parcours from "./sections/Parcours.jsx";
@@ -84,6 +86,7 @@ export default function App() {
       {booting && <Boot onReveal={() => setRevealed(true)} />}
       <Hud active={active} onMenu={() => setMenuOpen(true)} />
       <Menu open={menuOpen} active={active} onClose={() => setMenuOpen(false)} />
+      <ClickSpark sparkColor="#c8ff00" sparkSize={9} sparkRadius={26} sparkCount={7} duration={420} shape="line" style={{ height: "auto" }}>
       <main ref={main} className="page">
         <Hero revealed={revealed} />
         <Profil />
@@ -94,8 +97,10 @@ export default function App() {
         <Terminal />
         <Contact />
       </main>
+      </ClickSpark>
       <div className="grain" aria-hidden="true" />
       <TooltipLayer />
+      <Cursor />
     </>
   );
 }
