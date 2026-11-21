@@ -28,6 +28,8 @@ import { CozyRoom } from './components/room.jsx';
 import { person, intro, featured, burrow, skills, path, interests, traits } from './data.js';
 
 gsap.registerPlugin(ScrollTrigger);
+// phones: the browser bar sliding in and out must not re-measure every scene mid-scroll
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 const DEPTH = 412; // metres at the floor; the meter maps scroll to this
 const ALTITUDE = 1200; // metres above the well where the intro starts
@@ -170,14 +172,15 @@ const RISING = ['zero', 'key', 'one', 'lock', 'hog', 'one', 'eye'];
 
 // The dream sky above the well: white-line objects adrift in violet space.
 // [kind, x %, y %, size px, base rotation, float duration s]
+// [kind, x %, y %, size px, rotation, float s, x % and y % on a phone (off the name)]
 const FLOATERS = [
   ['bed', 9, 8, 92, -10, 10],
-  ['chair', 80, 25, 66, 16, 8],
+  ['chair', 80, 25, 66, 16, 8, 84, 57],
   ['table', 94, 6, 58, -6, 9],
-  ['book', 22, 30, 64, -14, 9],
-  ['crystal', 22, 38, 58, 12, 7],
+  ['book', 22, 30, 64, -14, 9, 12, 52],
+  ['crystal', 22, 38, 58, 12, 7, 30, 61],
   ['lock', 87, 9, 64, 10, 8],
-  ['satellite', 72, 35, 92, -22, 11],
+  ['satellite', 72, 35, 92, -22, 11, 68, 47],
   ['planet', 3, 40, 76, 0, 10],
   ['note', 41, 42, 50, 14, 6.5],
   ['floppy', 57, 41, 58, -10, 9.5],
@@ -1238,11 +1241,12 @@ export default function App() {
                   style={{ left: `${x}%`, top: `${y}%`, width: `${w}vw`, '--dur': `${dur}s`, '--d': `${-i * 1.7}s` }}
                 />
               ))}
-              {FLOATERS.map(([kind, x, y, size, rot, dur], i) => (
+              {FLOATERS.map(([kind, x, y, size, rot, dur, px = x, py = y], i) => (
                 <SpaceObject
                   key={i}
                   kind={kind}
-                  style={{ left: `${x}%`, top: `${y}%`, width: size, height: size, '--r': `${rot}deg`, '--dur': `${dur}s`, '--d': `${-i * 1.3}s` }}
+                  className="floater"
+                  style={{ '--x': `${x}%`, '--y': `${y}%`, '--px': `${px}%`, '--py': `${py}%`, width: size, height: size, '--r': `${rot}deg`, '--dur': `${dur}s`, '--d': `${-i * 1.3}s` }}
                 />
               ))}
             </div>

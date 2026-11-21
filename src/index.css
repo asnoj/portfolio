@@ -59,6 +59,7 @@
   box-sizing: border-box;
 }
 html {
+  overflow-x: clip;
   background: var(--paper);
   color: var(--ink);
   scrollbar-color: var(--ink-soft) var(--paper);
@@ -1151,6 +1152,11 @@ html.is-dark .meter {
   animation: float var(--dur) ease-in-out infinite;
   animation-delay: var(--d);
 }
+.floater {
+  left: var(--x);
+  top: var(--y);
+}
+
 @keyframes float {
   0%,
   100% {
@@ -2510,6 +2516,14 @@ html.is-dark .meter {
   .space-object {
     scale: 0.75;
   }
+  /* on a phone the name fills the sky: what floated behind it moves below it */
+  .floater {
+    left: var(--px);
+    top: var(--py);
+  }
+  .world-ice {
+    display: none;
+  }
   .world {
     scale: 1.8;
   }
@@ -2544,10 +2558,14 @@ html.is-dark .meter {
   }
   .ra-bed {
     left: 2%;
-    width: 38vw;
+    width: 32vw;
   }
   .ra-pc {
-    width: 56vw;
+    width: 46vw;
+  }
+  /* the lines sit above the furniture, never on it */
+  .sky-lines {
+    padding-bottom: calc(14vh + 30vw);
   }
   .rd-monitor {
     left: 3%;
@@ -2860,5 +2878,32 @@ html.lite .rays {
   .space-object,
   .sparkle {
     animation: none;
+  }
+}
+
+/* ---------- phones: the browser bar ---------- */
+/* The pinned scenes fill the large viewport (bar hidden), so no light strip shows under them when the bar slides away;
+   what sits at the bottom stays above the bar while it is shown. --bar is 0 on desktop. */
+@media (prefers-reduced-motion: no-preference) {
+  :root {
+    --bar: calc(100lvh - 100svh);
+  }
+  .sky,
+  .hero {
+    height: 100lvh;
+  }
+  .room,
+  .sky-lines {
+    bottom: var(--bar);
+  }
+  .sky-cue,
+  .hero-cue {
+    bottom: calc(clamp(14px, 3vh, 30px) + var(--bar));
+  }
+  .hero-land {
+    height: calc(var(--horizon) + var(--bar));
+  }
+  .hero-pit {
+    bottom: calc(var(--pit-bottom) + var(--bar));
   }
 }
