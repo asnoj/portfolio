@@ -41,7 +41,7 @@ Source: `cv Jonas Crochet cyber.png` (repo root; the dev CV is no longer used).
 - Education: 42 Le Havre (since Oct 2025); Bac général June 2025, Lycée Guillaume Le Conquérant Lillebonne (NSI, Maths, HLP).
 - Experience: Port-Jérôme-sur-Seine technical service (road maintenance, fixed-term 20 July – 7 Aug 2026); IDESS Communication, infographics internship (flyers, logos, Jan 2022).
 - Soft skills: teamwork and knowledge sharing, resilient, good interpersonal skills, resourceful. Interests: climbing, weight training, cybersecurity, music (classical conservatory, 7 years), chess. English B2. Driving licence B, vehicle. Based in 76600 Le Havre.
-- Contact: email, LinkedIn https://www.linkedin.com/in/jonascrochet/, GitHub https://github.com/asnoj. Phone stays off the site (only in the downloadable CV).
+- Contact: email, LinkedIn https://www.linkedin.com/in/jonascrochet/, GitHub https://github.com/asnoj. Phone stays off the site. No CV download on the site (user decision 2026-11-21).
 - Absent: no project screenshots, no testimonials, no metrics. Do not invent any.
 
 - Mascot: the hedgehog (hérisson) is Jonas's identity (user request 2026-11-20).

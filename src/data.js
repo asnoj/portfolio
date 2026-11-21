@@ -9,7 +9,6 @@ export const person = {
   email: 'jonas.crochet.jc@gmail.com',
   github: 'https://github.com/asnoj',
   linkedin: 'https://www.linkedin.com/in/jonascrochet/',
-  cv: '/cv/cv-jonas-crochet-cyber.png',
 };
 
 export const intro = {

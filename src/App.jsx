@@ -1363,9 +1363,6 @@ export default function App() {
             <p className="who-links">
               <a href={`mailto:${person.email}`}>m’écrire</a>
               <a href={person.linkedin}>LinkedIn</a>
-              <a href={person.cv} download>
-                le CV
-              </a>
             </p>
           </div>
         </section>
@@ -1620,7 +1617,6 @@ export default function App() {
           <ul className="floor-links">
             <li><a href={person.linkedin}>LinkedIn</a></li>
             <li><a href={person.github}>GitHub</a></li>
-            <li><a href={person.cv} download>Télécharger le CV</a></li>
           </ul>
           {/* the room at the bottom of the fall: an armchair, a desk with the computer on, tea, and lights */}
           <CozyRoom />
