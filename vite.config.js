@@ -1,8 +1,7 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
 
-// base relative : le dossier dist/ fonctionne servi à la racine comme dans un sous-dossier
+// https://vite.dev/config/
 export default defineConfig({
-  base: "./",
   plugins: [react()],
-});
+})

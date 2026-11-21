@@ -1,6 +1,36 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
 # CV (données personnelles : téléphone, date de naissance) — ne pas publier
 cv Jonas Crochet cyber.png
 cv Jonas Crochet dev.png
+public/cv/
 
-node_modules/
-dist/
+# Images de référence (droits tiers), outils locaux
+exemple*.jpg
+omori-pixel-art-hd-wallpaper-preview.jpg
+cntzdmwky4xa1.jpg
+.claude/
+.impeccable/
