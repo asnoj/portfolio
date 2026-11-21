@@ -2907,3 +2907,95 @@ html.lite .rays {
     bottom: calc(var(--pit-bottom) + var(--bar));
   }
 }
+
+/* ---------- phones: the burrow, dug straight down ---------- */
+/* Under the den, a tunnel goes down through the earth: hatched soil and pebbles on both sides, the signs and the repos
+   along a root inside it, and the hedgehog waiting at the bottom. Wide screens keep the sideways walk. */
+@media (max-width: 900px) {
+  .burrow {
+    --earth: color-mix(in oklab, var(--a3) 38%, var(--s1));
+    --tunnel: #efe9df;
+    padding: 0 0 56px;
+    background:
+      radial-gradient(circle at 6% 22%, #9fcdb8 0 5px, var(--ink) 5px 7px, transparent 7.5px),
+      radial-gradient(circle at 95% 38%, #c9b6e4 0 4px, var(--ink) 4px 6px, transparent 6.5px),
+      radial-gradient(circle at 4% 61%, #c9b6e4 0 4px, var(--ink) 4px 6px, transparent 6.5px),
+      radial-gradient(circle at 96% 77%, #9fcdb8 0 6px, var(--ink) 6px 8px, transparent 8.5px),
+      radial-gradient(circle at 5% 92%, #9fcdb8 0 4px, var(--ink) 4px 6px, transparent 6.5px),
+      repeating-linear-gradient(66deg, color-mix(in oklab, var(--a3) 70%, transparent) 0 2px, transparent 2px 8px),
+      var(--earth);
+  }
+  /* the den a little to the right, so its signpost isn't cut */
+  .burrow-gate .gate-box {
+    translate: -44% -58%;
+  }
+  .burrow-inside {
+    background: none;
+  }
+  .burrow-earth {
+    display: none;
+  }
+  /* the tunnel itself: open at the top, under the hole, rounded at the bottom where he lives */
+  .burrow-track {
+    position: relative;
+    margin: 0 26px;
+    padding: 36px 20px 190px;
+    background: var(--tunnel);
+    border: 2.5px solid var(--ink);
+    border-top: 0;
+    border-radius: 0 0 46% 52% / 0 0 150px 130px;
+    box-shadow: inset 0 18px 22px -16px color-mix(in oklab, var(--ink) 35%, transparent);
+  }
+  .burrow-intro {
+    margin-bottom: 36px;
+  }
+  .burrow-intro .project-name {
+    font-size: 2.3rem;
+  }
+  .burrow-intro p {
+    font-size: 1.02rem;
+  }
+  /* each family hangs from a root that wanders down the tunnel */
+  .burrow-group {
+    margin: 0 0 44px 4px;
+    padding-left: 24px;
+    border-left: 0;
+    background: no-repeat left top / 14px 100% url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 14 400%27 preserveAspectRatio=%27none%27%3E%3Cpath d=%27M5 0 C 11 60, 2 110, 7 170 S 3 290, 8 400%27 fill=%27none%27 stroke=%27%238a5a3c%27 stroke-width=%272.4%27 stroke-linecap=%27round%27 vector-effect=%27non-scaling-stroke%27/%3E%3C/svg%3E");
+  }
+  .burrow-sign {
+    margin: 0 0 16px -30px;
+  }
+  .burrow-group .sign-tip,
+  .burrow-group .burrow-sign:hover .sign-tip,
+  .burrow-group .burrow-sign:focus-visible .sign-tip {
+    margin-top: 12px;
+    padding-left: 30px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .tag {
+    padding: 14px 18px 16px;
+    box-shadow: 3px 4px 0 color-mix(in oklab, var(--ink) 14%, transparent);
+  }
+  .tag-name {
+    font-size: 1.3rem;
+  }
+  .tag-text {
+    font-size: 0.94rem;
+  }
+  .burrow-chips .tag {
+    box-shadow: 2px 3px 0 color-mix(in oklab, var(--ink) 14%, transparent);
+  }
+  .burrow-end {
+    margin: 8px 0 0;
+    font-size: 1.35rem;
+  }
+  /* at the bottom of the tunnel, on its floor */
+  .burrow-hog {
+    position: relative;
+    z-index: 2;
+    width: 112px;
+    margin: -150px auto 0;
+    display: block;
+  }
+}
