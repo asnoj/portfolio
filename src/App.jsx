@@ -1362,7 +1362,7 @@ export default function App() {
             <p className="who-pitch">{intro.pitch}</p>
             <p className="who-links">
               <a href={`mailto:${person.email}`}>m’écrire</a>
-              <a href={person.linkedin}>LinkedIn</a>
+              <a href={person.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
             </p>
           </div>
         </section>
@@ -1374,7 +1374,7 @@ export default function App() {
           </Deco>
           <Chapter id="projets" title="Ce que j’ai construit" depth={112} seed={81} />
           <p className="stratum-intro">
-            Une sélection parmi la vingtaine de dépôts de mon <a href={person.github}>GitHub</a>, du shell au packer ELF. Tout est
+            Une sélection parmi la vingtaine de dépôts de mon <a href={person.github} target="_blank" rel="noopener noreferrer">GitHub</a>, du shell au packer ELF. Tout est
             fait de zéro, pour voir ce qui se passe en dessous.
           </p>
           <div className="projects">
@@ -1390,7 +1390,7 @@ export default function App() {
                       <li key={l}>{l}</li>
                     ))}
                   </ul>
-                  <a className="project-link" href={p.url}>
+                  <a className="project-link" href={p.url} target="_blank" rel="noopener noreferrer">
                     voir le dépôt
                   </a>
                 </div>
@@ -1486,7 +1486,7 @@ export default function App() {
                   {g.desc && <span className="sign-tip">{g.desc}</span>}
                 </div>
                 {g.repos.map((r) => (
-                  <a key={r.name} className="tag" href={r.url}>
+                  <a key={r.name} className="tag" href={r.url} target="_blank" rel="noopener noreferrer">
                     <span className="tag-name">{r.name.replace(/_/g, '_\u200b')}</span>
                     <span className="tag-lang">{r.lang}</span>
                     <span className="tag-text">{r.text}</span>
@@ -1495,7 +1495,7 @@ export default function App() {
               </div>
             ))}
             <div className="burrow-end">
-              <a href={person.github}>Tout voir sur github.com/asnoj</a>
+              <a href={person.github} target="_blank" rel="noopener noreferrer">Tout voir sur github.com/asnoj</a>
             </div>
           </div>
           <Hedgehog className="burrow-hog" seed={33} />
@@ -1615,8 +1615,8 @@ export default function App() {
             {person.email}
           </a>
           <ul className="floor-links">
-            <li><a href={person.linkedin}>LinkedIn</a></li>
-            <li><a href={person.github}>GitHub</a></li>
+            <li><a href={person.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+            <li><a href={person.github} target="_blank" rel="noopener noreferrer">GitHub</a></li>
           </ul>
           {/* the room at the bottom of the fall: an armchair, a desk with the computer on, tea, and lights */}
           <CozyRoom />
