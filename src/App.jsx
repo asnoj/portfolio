@@ -80,7 +80,7 @@ const ARRIVALS = [
 // What you read on the way down.
 // The story, told in two rooms: the bedroom at 9, today; then the way down.
 const SKY_LINES = [
-  { small: 'chapitre 0', pre: 'Depuis mes', age: '9', then: 'Un PC dans ma chambre. Je ne l’ai plus jamais lâché' },
+  { small: 'chapitre 0', pre: 'Depuis mes', age: '9', then: 'Un PC dans ma chambre\nJe ne l’ai plus jamais lâché' },
   { small: 'aujourd’hui · C · C++ · assembleur · Linux', big: 'Je construis mes outils de zéro,', then: 'pour comprendre comment on les protège' },
   { small: 'la visite commence ici', big: 'Laissez le hérisson vous guider', then: 'Projets, outils, parcours : il connaît le chemin' },
 ];
@@ -220,26 +220,29 @@ function Letters({ text, className, bob = false }) {
   let n = 0;
   return (
     <span className={className}>
-      <span className="sr-only">{text}</span>
+      <span className="sr-only">{text.replace(/\n/g, ' ')}</span>
       <span aria-hidden="true">
-        {text.split(' ').map((word, w) => (
-          <span key={w} className="word">
-            {w > 0 && ' '}
-            <span className="word-in">
-              {[...word].map((c, i) => (
-                <span key={i} className="ltr">
-                  {bob ? (
-                    <span className="bob" style={{ '--i': n++ }}>
-                      {c}
-                    </span>
-                  ) : (
-                    c
-                  )}
-                </span>
-              ))}
+        {text.split('\n').flatMap((line, l) => [
+          l > 0 && <br key={`br${l}`} />,
+          ...line.split(' ').map((word, w) => (
+            <span key={`${l}-${w}`} className="word">
+              {w > 0 && ' '}
+              <span className="word-in">
+                {[...word].map((c, i) => (
+                  <span key={i} className="ltr">
+                    {bob ? (
+                      <span className="bob" style={{ '--i': n++ }}>
+                        {c}
+                      </span>
+                    ) : (
+                      c
+                    )}
+                  </span>
+                ))}
+              </span>
             </span>
-          </span>
-        ))}
+          )),
+        ])}
       </span>
     </span>
   );
