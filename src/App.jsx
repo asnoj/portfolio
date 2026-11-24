@@ -80,9 +80,9 @@ const ARRIVALS = [
 // What you read on the way down.
 // The story, told in two rooms: the bedroom at 9, today; then the way down.
 const SKY_LINES = [
-  { small: 'chapitre 0', pre: 'depuis mes', age: '9', then: 'Un PC dans ma chambre. Je ne l’ai plus jamais lâché.' },
-  { small: 'aujourd’hui · C · C++ · assembleur · Linux', big: 'Je construis mes outils de zéro,', then: 'pour comprendre comment on les protège.' },
-  { small: 'la visite commence ici', big: 'Laissez le hérisson vous guider.', then: 'Projets, outils, parcours : il connaît le chemin.' },
+  { small: 'chapitre 0', pre: 'Depuis mes', age: '9', then: 'Un PC dans ma chambre. Je ne l’ai plus jamais lâché' },
+  { small: 'aujourd’hui · C · C++ · assembleur · Linux', big: 'Je construis mes outils de zéro,', then: 'pour comprendre comment on les protège' },
+  { small: 'la visite commence ici', big: 'Laissez le hérisson vous guider', then: 'Projets, outils, parcours : il connaît le chemin' },
 ];
 // The night you fall through before the well: two layers of things adrift, scattered on a jittered grid.
 // [kind, x %, y % of the layer, size px, rotation, float s]. The near layer keeps clear of the text in the middle.
