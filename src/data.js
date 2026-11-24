@@ -101,21 +101,19 @@ export const burrow = [
   },
 ];
 
-// `on`: circled in pencil, the groups that matter most for a cyber role.
+// Each group is circled in pencil.
 export const skills = [
   {
     id: 'cyber',
     title: 'Cybersécurité',
     items: ['Pentest', 'CTF', 'Mécanismes offensifs et défensifs', 'Protection des données personnelles (RGPD, Privacy Policy, CGU)'],
-    on: true,
   },
   {
     id: 'net',
     title: 'Réseaux & administration',
     items: ['Docker / Docker Compose', 'TLS 1.2/1.3', 'HTTPS / WSS', 'Sockets', 'WebSocket / Socket.io'],
-    on: true,
   },
-  { id: 'lang', title: 'Langages', items: ['C', 'C++', 'Assembleur x86-64 (NASM)', 'SQL', 'Bash'], on: true },
+  { id: 'lang', title: 'Langages', items: ['C', 'C++', 'Assembleur x86-64 (NASM)', 'SQL', 'Bash'] },
   {
     id: 'prog',
     title: 'Programmation système',

@@ -81,8 +81,8 @@ const ARRIVALS = [
 // The story, told in two rooms: the bedroom at 9, today; then the way down.
 const SKY_LINES = [
   { small: 'chapitre 0', pre: 'depuis mes', age: '9', then: 'Un PC dans ma chambre. Je ne l’ai plus jamais lâché.' },
-  { small: 'aujourd’hui · C · C++ · assembleur · Linux', big: 'Je construis mes outils de zéro,', then: 'pour comprendre comment on les attaque.' },
-  { small: 'la suite est sous vos pieds', big: 'Préparez-vous à la descente.', then: 'Projets, outils, parcours : tout est en bas.' },
+  { small: 'aujourd’hui · C · C++ · assembleur · Linux', big: 'Je construis mes outils de zéro,', then: 'pour comprendre comment on les protège.' },
+  { small: 'la visite commence ici', big: 'Laissez le hérisson vous guider.', then: 'Projets, outils, parcours : il connaît le chemin.' },
 ];
 // The night you fall through before the well: two layers of things adrift, scattered on a jittered grid.
 // [kind, x %, y % of the layer, size px, rotation, float s]. The near layer keeps clear of the text in the middle.
@@ -145,7 +145,7 @@ const ASCII_HOG = `⠀⠀⠀⠀⠀⠀⢠⠠⣆⢆⢶⢴⢄⣦⢊⠴⡘⢆⢤⡞�
 // Chapters marked on the depth meter: click one to go there.
 // The meter reads the same depth as each chapter title, and interpolates in between.
 const NOTCHES = [
-  ['qui', 'Qui tombe', 38],
+  ['qui', 'Enchanté', 38],
   ['projets', 'Projets', 112],
   ['outils', 'Outils', 190],
   ['parcours', 'Parcours', 268],
@@ -734,7 +734,8 @@ export default function App() {
         };
         const tl = gsap.timeline({
           defaults: { ease: 'none' },
-          scrollTrigger: { trigger: '.hero', start: 'top top', end: '+=280%', pin: true, scrub: 0.8, invalidateOnRefresh: true },
+          // anticipatePin: a fast flick reaches the hero before the pin does; pinning a little early avoids a frame of empty spacer
+          scrollTrigger: { trigger: '.hero', start: 'top top', end: '+=280%', pin: true, anticipatePin: 1, scrub: 0.8, invalidateOnRefresh: true },
         });
         heroST = tl.scrollTrigger;
         // the scenery stays where it is: the sky drifts up as one piece, the ground (lamps, bushes, flowers) zooms as one
@@ -821,6 +822,9 @@ export default function App() {
             prev = y;
             if (!armed || holding || !crossed || l.direction !== 1) return;
             if (y - S > vh() * 1.5 || performance.now() < navUntil.current) return; // a jump, not a scroll
+            // only the smoothed wheel can be held: pulling back a native touch fling (or a dragged scrollbar) fights the
+            // browser's own momentum, which shakes the page and flashes the empty space under the pinned hero
+            if (l.isScrolling === 'native') return;
             armed = false;
             holding = true;
             l.scrollTo(S, {
@@ -969,6 +973,111 @@ export default function App() {
             )
             .to('.burrow-drop', { y: () => burrowEl.offsetHeight + 80, rotation: 540, duration: 0.2, ease: 'power2.in' }, 1 + W + 0.52)
             .to({}, { duration: 0.03 }, 1 + W + E - 0.03);
+        } else {
+          // 2b'. The burrow on a phone, the same way in: the hedgehog leaps into the den, the camera follows him, and the
+          //      den opens like an eye onto a tunnel dug straight down. He drops in and rolls down along its wall, just
+          //      ahead of you, and lands at the bottom where he uncurls. Transforms, one mask and a sticky element only.
+          const gate = root.current.querySelector('.burrow-gate');
+          const scene = gate.querySelector('.gate-scene');
+          const box = gate.querySelector('.gate-box');
+          const den = gate.querySelector('.gate-den');
+          const guide = root.current.querySelector('.tunnel-guide');
+          const ball = guide.querySelector('.tunnel-ball');
+          const ballArt = ball.querySelector('svg');
+          const hog = root.current.querySelector('.burrow-hog');
+          const bw = () => box.offsetWidth;
+          const bh = () => box.offsetHeight;
+          const BALL = 48; // .tunnel-ball, px
+          // the den on the stage: the box scales around it, so it stays put whatever the progress
+          const at = () => {
+            const d = den.getBoundingClientRect();
+            const g = gate.getBoundingClientRect();
+            return { x: d.left + d.width / 2 - g.left, y: d.top + d.height / 2 - g.top };
+          };
+          // the iris radius that uncovers the whole stage from the den
+          const reach = () => {
+            const { x, y } = at();
+            return Math.hypot(Math.max(x, gate.offsetWidth - x), Math.max(y, gate.offsetHeight - y)) + 8;
+          };
+          // the hedgehog and the ball on the surface, centre to centre (layout values: unaffected by their tweens)
+          const centreX = (el) => {
+            const cs = getComputedStyle(el);
+            return parseFloat(cs.left) + parseFloat(cs.width) / 2;
+          };
+          const fromHog = () => centreX(gate.querySelector('.gate-hog')) - centreX(gate.querySelector('.gate-ball'));
+          const way = gsap.timeline({
+            defaults: { ease: 'none' },
+            scrollTrigger: {
+              trigger: gate,
+              start: 'top top',
+              end: '+=170%',
+              pin: true,
+              anticipatePin: 1,
+              scrub: 0.6,
+              invalidateOnRefresh: true,
+              onRefresh: () => {
+                const { x, y } = at();
+                scene.style.setProperty('--ix', `${x.toFixed(1)}px`);
+                scene.style.setProperty('--iy', `${y.toFixed(1)}px`);
+              },
+            },
+          });
+          way
+            .fromTo('.gate-hog', { scaleX: 1, scaleY: 1, y: 0, rotation: 0 }, { scaleX: 1.12, scaleY: 0.78, duration: 0.05, ease: 'power2.in', transformOrigin: '50% 100%' }, 0)
+            .to('.gate-hog', { scaleX: 0.9, scaleY: 1.15, y: () => -0.06 * bh(), rotation: -12, duration: 0.03, ease: 'power2.out' }, 0.05)
+            .set('.gate-hog', { opacity: 0 }, 0.08)
+            .set('.gate-ball', { opacity: 1 }, 0.08)
+            .fromTo('.gate-ball', { x: fromHog, rotation: 0, scale: 1 }, { x: () => (DEN.x / DEN.w - 0.32) * bw(), rotation: 900, scale: 0.42, duration: 0.3 }, 0.08)
+            .fromTo('.gate-ball', { y: () => -0.06 * bh() }, { y: () => -0.32 * bh(), duration: 0.14, ease: 'power2.out' }, 0.08)
+            .to('.gate-ball', { y: () => (DEN.y / DEN.h - 0.614) * bh(), duration: 0.16, ease: 'power2.in' }, 0.22)
+            .to('.gate-ball', { opacity: 0, duration: 0.02 }, 0.38)
+            .fromTo('.gate-puff', { scale: 0.3, opacity: 0 }, { scale: 1.3, opacity: 1, duration: 0.05, ease: 'power2.out' }, 0.39)
+            .to('.gate-puff', { scale: 1.7, opacity: 0, duration: 0.07 }, 0.44)
+            // the camera dives after him
+            .fromTo(box, { scale: 1 }, { scale: () => (Math.hypot(gate.offsetWidth, gate.offsetHeight) * 1.6) / ((DEN.ry * 2 * bh()) / DEN.h), duration: 0.36, ease: 'power3.in' }, 0.46)
+            // the den opens like an eye: a hole grows in the scene, onto the tunnel drawn behind it, a pencil rim on its edge
+            .fromTo(scene, { '--iris': '-2px' }, { '--iris': () => `${reach()}px`, duration: 0.2, ease: 'power2.in' }, 0.76)
+            .fromTo(
+              '.gate-ring',
+              { width: 0, height: 0, left: () => at().x, top: () => at().y, opacity: 1 },
+              { width: () => reach() * 2, height: () => reach() * 2, duration: 0.2, ease: 'power2.in' },
+              0.76,
+            )
+            .set('.gate-ring', { opacity: 0 }, 0.97)
+            .set(scene, { visibility: 'hidden' }, 0.97)
+            // he drops into the tunnel and keeps rolling on ahead
+            .fromTo(guide, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.01 }, 0.87)
+            .fromTo(ballArt, { y: () => -window.innerHeight * 0.5 }, { y: 0, duration: 0.12, ease: 'power2.out' }, 0.87);
+
+          // the roll: one turn for every length of his own round, from the top of the burrow to the bottom of the wall
+          const landAt = () => `bottom ${Math.round(window.innerHeight * 0.4) + BALL}px`;
+          gsap.fromTo(
+            ballArt,
+            { rotation: 0 },
+            {
+              rotation: () => ((guide.offsetHeight - window.innerHeight * 0.4) / (Math.PI * BALL)) * 360,
+              ease: 'none',
+              scrollTrigger: { trigger: guide, start: 'top top', end: landAt, scrub: true, invalidateOnRefresh: true },
+            },
+          );
+          // at the foot of the wall he rolls into the hollow and uncurls (positions on the page: they scroll together)
+          const landing = () => {
+            const g = guide.getBoundingClientRect();
+            const h = hog.getBoundingClientRect();
+            const hogH = (parseFloat(getComputedStyle(hog).width) * 120) / 170;
+            return { x: h.left + h.width / 2 - (g.left + g.width / 2), y: h.bottom - hogH * 0.42 - (g.bottom - BALL / 2) };
+          };
+          gsap
+            .timeline({
+              defaults: { ease: 'none' },
+              scrollTrigger: { trigger: guide, start: landAt, end: () => `+=${Math.round(window.innerHeight * 0.24)}`, scrub: 0.5, invalidateOnRefresh: true },
+            })
+            .fromTo(ball, { x: 0 }, { x: () => landing().x, duration: 0.7, ease: 'power1.in' }, 0)
+            .fromTo(ball, { y: 0 }, { y: () => landing().y, duration: 0.7, ease: 'sine.out' }, 0)
+            .fromTo(ball, { rotation: 0 }, { rotation: -320, duration: 0.7 }, 0)
+            .to(ball, { autoAlpha: 0, duration: 0.06 }, 0.66)
+            .fromTo(hog, { autoAlpha: 0, scaleX: 0.7, scaleY: 0.45 }, { autoAlpha: 1, scaleX: 1, scaleY: 1, duration: 0.3, ease: 'back.out(2.6)', transformOrigin: '50% 100%' }, 0.66)
+            .to({}, { duration: 0.04 }, 0.96);
         }
 
         // 3. Chapter titles settle letter by letter, like things landing.
@@ -1174,7 +1283,7 @@ export default function App() {
               <path d={strokePath([[4, 20], [7, 9], [17, 12]], 1362, 0.4)} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             </svg>
             <span>
-              il fait noir… tirez l’ampoule
+              un peu de lumière ? tirez l’ampoule
               <small>(ou cherchez avec la souris)</small>
             </span>
           </p>
@@ -1205,7 +1314,7 @@ export default function App() {
             ))}
           </div>
           <a className="sky-cue" href="#qui">
-            descendre
+            on y va
             <svg viewBox="0 0 20 40" aria-hidden="true">
               <path d={strokePath([[10, 2], [10, 34]], 73)} fill="none" stroke="currentColor" strokeWidth="2" />
               <path d={strokePath([[3, 26], [10, 36], [17, 26]], 74, 0.6)} fill="none" stroke="currentColor" strokeWidth="2" />
@@ -1302,7 +1411,7 @@ export default function App() {
             <Hole className="hero-hole" />
           </div>
           <a className="hero-cue" href="#qui">
-            tomber
+            suivre le hérisson
             <svg viewBox="0 0 20 40" aria-hidden="true">
               <path d={strokePath([[10, 2], [10, 34]], 71)} fill="none" stroke="currentColor" strokeWidth="2" />
               <path d={strokePath([[3, 26], [10, 36], [17, 26]], 72, 0.6)} fill="none" stroke="currentColor" strokeWidth="2" />
@@ -1357,7 +1466,7 @@ export default function App() {
           <Deco className="on-paper deco-who-2" drift={0.4}>
             <SpaceObject kind="chair" style={{ '--r': '18deg' }} />
           </Deco>
-          <Chapter id="qui" title="Qui tombe ?" depth={38} seed={79} />
+          <Chapter id="qui" title="Enchanté !" depth={38} seed={79} />
           <div className="who-body">
             <p className="who-want">
               {intro.want}
@@ -1379,7 +1488,7 @@ export default function App() {
           <Chapter id="projets" title="Ce que j’ai construit" depth={112} seed={81} />
           <p className="stratum-intro">
             Une sélection parmi la vingtaine de dépôts de mon <a href={person.github} target="_blank" rel="noopener noreferrer">GitHub</a>, du shell au packer ELF. Tout est
-            fait de zéro, pour voir ce qui se passe en dessous.
+            fait de zéro, pour comprendre ce qui se passe sous le capot.
           </p>
           <div className="projects">
             {featured.map((p) => (
@@ -1408,26 +1517,40 @@ export default function App() {
         <section className="burrow" aria-labelledby="terrier-title">
           {/* the way in, from the surface */}
           <div className="burrow-gate on-paper" aria-hidden="true">
-            <div className="gate-box">
-              <BurrowGate />
-              <svg className="gate-puff" viewBox="0 0 200 120">
-                {Array.from({ length: 11 }, (_, i) => {
-                  const a = Math.PI * (1.02 + (i / 10) * 0.96);
-                  return (
-                    <path
-                      key={i}
-                      d={strokePath([[100 + Math.cos(a) * 34, 70 + Math.sin(a) * 20], [100 + Math.cos(a) * 88, 70 + Math.sin(a) * 58]], 1810 + i, 0.6)}
-                      fill="none"
-                      stroke="var(--ink)"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                    />
-                  );
-                })}
-              </svg>
-              <Hedgehog className="gate-hog" seed={41} />
-              <HedgehogBall className="gate-ball" />
+            {/* the scene sits in its own layer: on a phone, the iris opens a hole in it onto the tunnel behind */}
+            <div className="gate-scene">
+              <div className="gate-box">
+                <BurrowGate />
+                <svg className="gate-puff" viewBox="0 0 200 120">
+                  {Array.from({ length: 11 }, (_, i) => {
+                    const a = Math.PI * (1.02 + (i / 10) * 0.96);
+                    return (
+                      <path
+                        key={i}
+                        d={strokePath([[100 + Math.cos(a) * 34, 70 + Math.sin(a) * 20], [100 + Math.cos(a) * 88, 70 + Math.sin(a) * 58]], 1810 + i, 0.6)}
+                        fill="none"
+                        stroke="var(--ink)"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                      />
+                    );
+                  })}
+                </svg>
+                <Hedgehog className="gate-hog" seed={41} />
+                <HedgehogBall className="gate-ball" />
+              </div>
             </div>
+            {/* phones: the pencil rim of that hole */}
+            <svg className="gate-ring" viewBox="0 0 200 200">
+              <path d={roughEllipse(100, 100, 99, 99, 1850, 1.14, 0.03)} fill="none" stroke="#b88a66" strokeWidth="5" vectorEffect="non-scaling-stroke" />
+              <path d={roughEllipse(100, 100, 98, 98, 1851, 1.1, 0.03)} fill="none" stroke="var(--ink)" strokeWidth="2.6" vectorEffect="non-scaling-stroke" />
+            </svg>
+          </div>
+          {/* phones: once inside, the hedgehog rolls down along the wall of the tunnel, just ahead of you */}
+          <div className="tunnel-guide" aria-hidden="true">
+            <span className="tunnel-ball">
+              <HedgehogBall />
+            </span>
           </div>
           <div className="burrow-after" aria-hidden="true" />
           <HedgehogBall className="burrow-drop" />
@@ -1465,7 +1588,7 @@ export default function App() {
               </h3>
               <p>
                 Tout le reste est rangé ici : une vingtaine de dépôts, de la sécurité au cursus 42.{' '}
-                <span className="burrow-tour">Continuez à descendre, le hérisson vous fait la visite.</span>
+                <span className="burrow-tour">Suivez le hérisson, il vous fait la visite.</span>
               </p>
             </div>
             {burrow.map((g, gi) => (
@@ -1504,6 +1627,11 @@ export default function App() {
           </div>
           <Hedgehog className="burrow-hog" seed={33} />
           </div>
+          {/* phones: the paper of the next stratum, torn along the earth */}
+          <svg className="burrow-exit" viewBox="0 0 1200 40" preserveAspectRatio="none" aria-hidden="true">
+            <path d={strokePath(Array.from({ length: 13 }, (_, i) => [i * 100, 14 + ((i * 29) % 15)]), 1861, 3) + ' L1200,40 L0,40 Z'} style={{ fill: 'var(--s2)' }} />
+            <path d={strokePath(Array.from({ length: 13 }, (_, i) => [i * 100, 14 + ((i * 29) % 15)]), 1861, 3)} fill="none" stroke="var(--ink)" strokeWidth="2.4" vectorEffect="non-scaling-stroke" />
+          </svg>
         </section>
 
         {/* STRATUM 2: skills */}
@@ -1518,13 +1646,11 @@ export default function App() {
           <p className="stratum-intro">Entourés au crayon : ce que j’apporte à une équipe sécurité.</p>
           <div className="skills">
             {skills.map((g, i) => (
-              <div key={g.id} className={`skill skill-${g.id} ${g.on ? 'on' : ''}`} data-drift={[0.3, 0.6, 0.2, 0.5, 0.4][i]}>
+              <div key={g.id} className={`skill skill-${g.id}`} data-drift={[0.3, 0.6, 0.2, 0.5, 0.4][i]}>
                 <h3 className="skill-title">
-                  {g.on && (
-                    <svg className="skill-ring sketch" viewBox="0 0 300 80" preserveAspectRatio="none" aria-hidden="true">
-                      <path d={roughEllipse(150, 40, 140, 30, 900 + i, 1.2)} fill="none" stroke="var(--ring)" strokeWidth="3" />
-                    </svg>
-                  )}
+                  <svg className="skill-ring sketch" viewBox="0 0 300 80" preserveAspectRatio="none" aria-hidden="true">
+                    <path d={roughEllipse(150, 40, 140, 30, 900 + i, 1.2)} fill="none" stroke="var(--ring)" strokeWidth="3" />
+                  </svg>
                   {g.title}
                 </h3>
                 <ul>
@@ -1571,7 +1697,7 @@ export default function App() {
                 <p className="step-when">janv. 2027</p>
                 <h3 className="step-title">Votre stage ou alternance ?</h3>
                 <p className="step-text">
-                  Le prochain nœud de la corde est encore vide. <a href="#contact">Me contacter</a>
+                  Le prochain nœud de la corde vous attend. <a href="#contact">Me contacter</a>
                 </p>
               </li>
             </ol>

@@ -540,7 +540,8 @@ export function BurrowGate() {
     const mound = d < 200 ? Math.cos((d / 200) * (Math.PI / 2)) ** 1.6 * 96 : 0;
     surface.push([x, 600 + Math.sin(x * 0.013) * 5 + (r() - 0.5) * 4 - mound]);
   }
-  const earth = strokePath(surface, 1702, 1.2) + ' L1480,940 L-40,940 Z';
+  // the earth runs on well below the frame: on a tall phone screen the scene is shown whole, with ground under it
+  const earth = strokePath(surface, 1702, 1.2) + ' L1480,2000 L-40,2000 Z';
   const ground = (x) => {
     const i = Math.max(0, Math.min(surface.length - 2, Math.floor((x + 40) / 40)));
     const [x0, y0] = surface[i];

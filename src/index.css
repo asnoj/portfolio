@@ -1802,6 +1802,17 @@ html.is-dark .meter {
   opacity: 0;
   overflow: visible;
 }
+.gate-scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+/* phone-only pieces of the burrow (see the end of the file) */
+.gate-ring,
+.tunnel-guide,
+.burrow-exit {
+  display: none;
+}
 .gate-iris {
   position: absolute;
   z-index: 6;
@@ -2046,22 +2057,18 @@ html.is-dark .meter {
 }
 .skill {
   grid-column: span 4;
-  color: var(--ink-soft);
-}
-.skill.on {
-  color: var(--ink);
 }
 .skill-lang {
   grid-column: 1 / span 5;
   rotate: -1.2deg;
 }
 .skill-sys {
-  grid-column: 7 / span 4;
+  grid-column: 8 / span 4;
   margin-top: 60px;
   rotate: 1.4deg;
 }
 .skill-prog {
-  grid-column: 2 / span 5;
+  grid-column: 2 / span 6;
   rotate: 0.8deg;
 }
 .skill-cyber {
@@ -2076,14 +2083,17 @@ html.is-dark .meter {
 .skill-title {
   position: relative;
   display: inline-block;
-  font-size: clamp(2rem, 3.4vw, 2.9rem);
+  font-size: clamp(1.6rem, 3.1vw, 2.9rem);
   margin-bottom: 18px;
+  /* on one line, so the pencil ring hugs the words (a wrapped title would stretch it across the column) */
+  white-space: nowrap;
 }
+/* the same margin around every title, whatever its length */
 .skill-ring {
   position: absolute;
-  left: -14%;
+  left: -0.5em;
   top: -36%;
-  width: 128%;
+  width: calc(100% + 1em);
   height: 172%;
   overflow: visible;
   pointer-events: none;
@@ -2745,6 +2755,10 @@ html.is-dark .meter {
     grid-column: 1;
     margin-top: 0;
   }
+  /* the longest title still fits on one line of a small phone */
+  .skill-title {
+    font-size: clamp(1.4rem, 6.6vw, 2rem);
+  }
   .step {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -2935,16 +2949,23 @@ html.lite .rays {
   .burrow-earth {
     display: none;
   }
-  /* the tunnel itself: open at the top, under the hole, rounded at the bottom where he lives */
-  .burrow-track {
-    position: relative;
-    margin: 0 26px;
-    padding: 36px 20px 190px;
+  /* the tunnel itself: dug from right under the den (it runs on behind it), rounded at the bottom where he lives */
+  .burrow::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 56px;
+    left: 26px;
+    right: 26px;
     background: var(--tunnel);
     border: 2.5px solid var(--ink);
     border-top: 0;
     border-radius: 0 0 46% 52% / 0 0 150px 130px;
-    box-shadow: inset 0 18px 22px -16px color-mix(in oklab, var(--ink) 35%, transparent);
+  }
+  .burrow-track {
+    position: relative;
+    margin: 0 26px;
+    padding: 36px 20px 190px;
   }
   .burrow-intro {
     margin-bottom: 36px;
@@ -2998,4 +3019,104 @@ html.lite .rays {
     margin: -150px auto 0;
     display: block;
   }
+  /* under the tunnel, the paper of the next stratum, torn along the earth */
+  .burrow-exit {
+    display: block;
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    bottom: -1px;
+    width: 100%;
+    height: 34px;
+    overflow: visible;
+  }
+}
+
+/* ---------- phones: the way into the burrow ---------- */
+/* As on wide screens: the den fills a whole screen, pinned; the hedgehog leaps in, the camera dives after him and the den
+   opens like an eye. The eye is a hole growing in the scene's mask, onto the tunnel drawn on the burrow behind it, so the
+   way on is the very same paper. Then he rolls down the tunnel's right wall (a sticky element) and lands at the bottom. */
+@property --iris {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: -2px;
+}
+@media (max-width: 900px) and (prefers-reduced-motion: no-preference) {
+  /* clip, not hidden: a hidden overflow would make the burrow a scroll box, and the ball would no longer stick */
+  .burrow {
+    overflow: clip;
+  }
+  .burrow-gate {
+    height: 100lvh;
+    margin: 0;
+    background: none;
+    pointer-events: none;
+  }
+  /* a whole screen for the scene: closer on the den, the ground on the lower half */
+  .burrow-gate .gate-box {
+    width: 250cqw;
+    translate: -43.5% -57%;
+  }
+  /* the tunnel's content rises behind the den while it opens, and shows through the eye */
+  .burrow-inside {
+    margin-top: -55lvh;
+  }
+  .gate-scene {
+    background: var(--s1);
+    -webkit-mask-image: radial-gradient(circle at var(--ix, 50%) var(--iy, 55%), transparent var(--iris), #000 calc(var(--iris) + 1px));
+    mask-image: radial-gradient(circle at var(--ix, 50%) var(--iy, 55%), transparent var(--iris), #000 calc(var(--iris) + 1px));
+  }
+  .gate-ring {
+    display: block;
+    position: absolute;
+    z-index: 2;
+    width: 0;
+    height: 0;
+    translate: -50% -50%;
+    overflow: visible;
+    opacity: 0;
+  }
+  /* his lane: along the right wall, from the top of the burrow down to where the floor starts to curve */
+  .tunnel-guide {
+    display: block;
+    position: absolute;
+    z-index: 7;
+    top: 0;
+    right: 10px;
+    bottom: calc(56px + 130px);
+    width: 48px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .tunnel-ball {
+    position: sticky;
+    top: 40svh;
+    display: block;
+    width: 48px;
+    height: 48px;
+  }
+  .tunnel-ball svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  /* the content keeps clear of his lane */
+  .burrow-track {
+    padding-right: 30px;
+  }
+  .burrow-tour {
+    display: inline;
+  }
+}
+
+/* ---------- pinned scenes: what shows if the scroll gets ahead of a pin ---------- */
+/* A fast native flick (touch, scrollbar) can move a section a frame before ScrollTrigger pins it, uncovering its spacer:
+   paint the spacer like the scene's own edge instead of the light page. */
+.pin-spacer:has(> .sky) {
+  background: var(--night-deep);
+}
+.pin-spacer:has(> .hero) {
+  background: linear-gradient(var(--land-deep) 40%, var(--void-ink) 60%);
 }
