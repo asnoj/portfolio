@@ -992,7 +992,7 @@ html.is-dark .meter {
 }
 /* three lamps at three depths: near on the left, mid on the right, far on the horizon */
 .lamp-l {
-  left: 21%;
+  left: 9%;
   bottom: calc(100% - 5.4vw);
   width: clamp(36px, 3.8vw, 62px);
 }
@@ -2920,10 +2920,10 @@ html.lite .rays {
   .sky-lines {
     bottom: var(--bar);
   }
-  /* the last line comes in the night, once the bulb is gone: centred on the whole screen, not under the bulb */
+  /* the last line comes in the night, once the bulb is gone: centred on the screen, a little above the middle */
   .sky-line-2 {
     position: absolute;
-    inset: 0;
+    inset: 0 0 16vh;
     margin: auto;
     width: min(18ch, calc(100% - 2 * var(--gutter)));
     height: fit-content;
