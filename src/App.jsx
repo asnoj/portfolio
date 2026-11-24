@@ -145,7 +145,7 @@ const ASCII_HOG = `⠀⠀⠀⠀⠀⠀⢠⠠⣆⢆⢶⢴⢄⣦⢊⠴⡘⢆⢤⡞�
 // Chapters marked on the depth meter: click one to go there.
 // The meter reads the same depth as each chapter title, and interpolates in between.
 const NOTCHES = [
-  ['qui', 'Enchanté', 38],
+  ['qui', 'Qui est-ce ?', 38],
   ['projets', 'Projets', 112],
   ['outils', 'Outils', 190],
   ['parcours', 'Parcours', 268],
@@ -1466,7 +1466,7 @@ export default function App() {
           <Deco className="on-paper deco-who-2" drift={0.4}>
             <SpaceObject kind="chair" style={{ '--r': '18deg' }} />
           </Deco>
-          <Chapter id="qui" title="Enchanté !" depth={38} seed={79} />
+          <Chapter id="qui" title="Qui est ce hérisson ?" depth={38} seed={79} />
           <div className="who-body">
             <p className="who-want">
               {intro.want}

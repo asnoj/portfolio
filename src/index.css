@@ -843,7 +843,13 @@ html.is-dark .meter {
   line-height: 1.02;
   letter-spacing: -0.02em;
   text-wrap: balance;
-  text-shadow: 0 0.04em 0.4em color-mix(in oklab, var(--dark) 70%, transparent);
+  text-shadow:
+    0 0.04em 0.4em color-mix(in oklab, var(--dark) 70%, transparent),
+    0 0 0.9em color-mix(in oklab, var(--dark) 65%, transparent);
+}
+/* the age line sits under the bulb, well clear of the furniture on the floor */
+.sky-line-0 {
+  align-self: start;
 }
 .sky-then {
   font-style: italic;
@@ -868,7 +874,7 @@ html.is-dark .meter {
 }
 .age-n {
   display: inline-block;
-  font-size: min(3.6em, 30vh);
+  font-size: min(3.6em, 24vh);
   font-weight: 700;
   font-style: italic;
   letter-spacing: -0.04em;
@@ -1124,7 +1130,11 @@ html.is-dark .meter {
   position: relative;
   z-index: 2;
   color: var(--star);
-  text-shadow: 0 0.04em 0 color-mix(in oklab, var(--glow) 55%, transparent);
+  /* a soft dark halo keeps the name readable over the planets and doodles drifting behind it */
+  text-shadow:
+    0 0.04em 0 color-mix(in oklab, var(--glow) 55%, transparent),
+    0 0 0.18em color-mix(in oklab, var(--dark) 55%, transparent),
+    0 0 0.5em color-mix(in oklab, var(--dark) 35%, transparent);
   padding-top: clamp(96px, 16vh, 170px);
   text-align: center;
   font-size: clamp(3.6rem, 10.6vw, 12.5rem);
@@ -2909,6 +2919,14 @@ html.lite .rays {
   .room,
   .sky-lines {
     bottom: var(--bar);
+  }
+  /* the last line comes in the night, once the bulb is gone: centred on the whole screen, not under the bulb */
+  .sky-line-2 {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: min(18ch, calc(100% - 2 * var(--gutter)));
+    height: fit-content;
   }
   .sky-cue,
   .hero-cue {
